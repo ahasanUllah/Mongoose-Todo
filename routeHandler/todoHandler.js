@@ -6,7 +6,15 @@ const Todo = new mongoose.model("Todo", todoSchema);
 
 // Get all the todo
 router.get('/', async(req, res) => {
+try{
+   const data = await Todo.find({})
+   
+   res.send(data)
+}
 
+catch(error){
+    res.status(500).json({error: "There was a Server side error"})
+}
 })
 
 // Get a the todo
@@ -55,7 +63,7 @@ router.put('/:id', async(req, res) => {
                 status: 'active'
             }
         });
-        res.status(200).json({message: "Todo was updted successfully"})
+        res.status(200).json({message: "Todo was updated successfully"})
     }
     catch(error){
         res.status(500).json({error: "There was a Server side error"})
@@ -63,11 +71,26 @@ router.put('/:id', async(req, res) => {
         
 })
 
+router.put('/update/all', async(req,res) => {
+    console.log(req.params);
+    try{
+       await Todo.updateMany({status: 'active'}, {
+            $set: {
+                status: 'inactive'
+            }
+        })
+        res.status(200).json({message: "Todo was updted successfully"})
+    }
+    catch (err){
+        res.status(500).json({error: "There was a Server side error update all"})
+    }
+    console.log('hitting update');
+})
 
 
 // Delete todo
 router.delete('/:id', async(req, res) => {
-    
+   
 })
 
 module.exports = router;
